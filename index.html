@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Store Prototype with Leaflet</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin=""/>
+</head>
+<body>
+  <div 
+    id="map" style="height: 800px;">
+  </div>
+
+
+  <!-- Include Leaflet JavaScript file -->
+  <script 
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin="">
+  </script>
+  <script src="us-states.js"></script>
+
+<script>
+    var map = L.map('map').setView([37.8, -96], 4);
+
+    var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    function style(feature) {
+        return {
+            fillColor: getFillColor(feature.properties.name),
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7
+        };
+    }
+
+    function highlightFeature(e) {
+        var layer = e.target;
+        layer.setStyle({
+            weight: 5,
+            color: '#666',
+            dashArray: '',
+            fillOpacity: 0.7
+        });
+        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+            layer.bringToFront();
+        }
+    }
+
+    function resetHighlight(e) {
+        geojson.resetStyle(e.target);
+    }
+
+    function zoomToFeature(e) {
+        map.fitBounds(e.target.getBounds());
+    }
+
+    function onEachFeature(feature, layer) {
+        layer.on({
+            mouseover: highlightFeature,
+            mouseout: resetHighlight,
+            click: zoomToFeature
+        });
+    }
+
+    var geojson = L.geoJson(statesData, {
+        style: style,
+        onEachFeature: onEachFeature
+    }).addTo(map);
+
+    // Parse the GeoJSON data
+    var storeData = {"regions": [
+        {
+            "label": "North",
+            "states": ["CT", "DE", "IL", "IN", "KY", "MD", "MA", "MI", "MN", "NJ", "NY", "OH", "PA", "RI", "VA"],
+            "links": [
+                {
+                    "label": "New England",
+                    "position": [933, 158],
+                    "label_position": "top",
+                    "url": "https://newengland.pulte.yurstore.com"
+                },
+                {
+                    "label": "Northeast Corridor",
+                    "description": "Del Valley & Metro NY/NJ",
+                    "position": [891, 206],
+                    "label_position": "top",
+                    "url": "https://northeastcorridor.pulte.yurstore.com"
+                },
+                {
+                    "label": "Mid-Atlantic",
+                    "position": [850, 265],
+                    "label_position": "bottom",
+                    "url": "https://midatlantic.pulte.yurstore.com"
+                },
+                {
+                    "label": "Michigan",
+                    "position": [740, 190],
+                    "label_position": "top",
+                    "url": "https://michigan.pulte.yurstore.com"
+                },
+                {
+                    "label": "Columbus",
+                    "position": [745, 245],
+                    "label_position": "bottom_right",
+                    "url": "https://columbus.pulte.yurstore.com"
+                },
+                {
+                    "label": "Cleveland",
+                    "position": [758, 224],
+                    "label_position": "right",
+                    "url": "https://cleveland.pulte.yurstore.com"
+                },
+                {
+                    "label": "Indianapolis",
+                    "position": [693, 253],
+                    "label_position": "left",
+                    "url": "https://indianapolis.pulte.yurstore.com"
+                },
+                {
+                    "label": "Louisville",
+                    "position": [725, 290],
+                    "label_position": "bottom",
+                    "url": "https://louisville.pulte.yurstore.com"
+                },
+                {
+                    "label": "Illinois",
+                    "position": [650, 215],
+                    "label_position": "top",
+                    "url": "https://illinois.pulte.yurstore.com"
+                },
+                {
+                    "label": "Minnesota",
+                    "position": [565, 150],
+                    "label_position": "top",
+                    "url": "https://minnesota.pulte.yurstore.com"
+                }
+            ]
+        },
+        {
+            "label": "West",
+            "states": ["AZ", "CA", "CO", "NM", "NV", "OR", "WA"],
+            "links": [
+                {
+                    "label": "Pacific Northwest",
+                    "description": "Seattle",
+                    "position": [125, 35],
+                    "label_position": "bottom",
+                    "url": "https://pacificnorthwest.pulte.yurstore.com"
+                },
+                {
+                    "label": "Northern California",
+                    "description": "Bay Area, Sacramento, Reno, Central Valley",
+                    "position": [60, 250],
+                    "label_position": "top_right",
+                    "url": "https://northerncalifornia.pulte.yurstore.com"
+                },
+                {
+                    "label": "Southern California",
+                    "position": [115, 360],
+                    "label_position": "bottom",
+                    "url": "https://southerncalifornia.pulte.yurstore.com"
+                },
+                {
+                    "label": "Las Vegas",
+                    "position": [170, 320],
+                    "label_position": "top",
+                    "url": "https://lasvegas.pulte.yurstore.com"
+                },
+                {
+                    "label": "Arizona",
+                    "description": "Phoenix, Tucson",
+                    "position": [230, 390],
+                    "label_position": "bottom",
+                    "url": "https://arizona.pulte.yurstore.com"
+                },
+                {
+                    "label": "New Mexico",
+                    "description": "Albuquerque, Santa Fe",
+                    "position": [325, 370],
+                    "label_position": "top",
+                    "url": "https://newmexico.pulte.yurstore.com"
+                },
+                {
+                    "label": "Colorado",
+                    "position": [365, 270],
+                    "label_position": "top",
+                    "url": "https://colorado.pulte.yurstore.com"
+                }
+            ]
+        },
+        {
+            "label": "Central",
+            "states": ["NC", "SC", "TN", "TX"],
+            "links": [
+                {
+                    "label": "Dallas",
+                    "position": [505, 430],
+                    "label_position": "top",
+                    "url": "https://dallas.pulte.yurstore.com"
+                },
+                {
+                    "label": "Houston",
+                    "position": [535, 505],
+                    "label_position": "top_right",
+                    "url": "https://houston.pulte.yurstore.com"
+                },
+                {
+                    "label": "Central Texas",
+                    "position": [500, 480],
+                    "label_position": "left",
+                    "url": "https://centraltexas.pulte.yurstore.com"
+                },
+                {
+                    "label": "San Antonio",
+                    "position": [475, 520],
+                    "label_position": "bottom",
+                    "url": "https://sanantonio.pulte.yurstore.com"
+                },
+                {
+                    "label": "Raleigh",
+                    "position": [830, 335],
+                    "label_position": "top_right",
+                    "url": "https://raleigh.pulte.yurstore.com"
+                },
+                {
+                    "label": "Charlotte",
+                    "position": [805, 350],
+                    "label_position": "bottom_right",
+                    "url": "https://charlotte.pulte.yurstore.com"
+                },
+                {
+                    "label": "Coastal Carolinas",
+                    "position": [830, 405],
+                    "label_position": "bottom",
+                    "url": "https://coastalcarolinas.pulte.yurstore.com"
+                },
+                {
+                    "label": "Tennessee",
+                    "position": [690, 350],
+                    "label_position": "top",
+                    "url": "https://tennessee.pulte.yurstore.com"
+                }
+            ]
+        },
+        {
+            "label": "SouthEast",
+            "states": ["FL", "GA"],
+            "links": [
+                {
+                    "label": "Georgia",
+                    "position": [740, 390],
+                    "label_position": "bottom_left",
+                    "url": "https://georgia.pulte.yurstore.com"
+                },
+                {
+                    "label": "Central Florida",
+                    "description": "Orlando",
+                    "position": [820, 505],
+                    "label_position": "top_right",
+                    "url": "https://centralfl.pulte.yurstore.com"
+                },
+                {
+                    "label": "Northeast Florida",
+                    "description": "Jacksonville",
+                    "position": [810, 470],
+                    "label_position": "top_right",
+                    "url": "https://nefl.pulte.yurstore.com"
+                },
+                {
+                    "label": "West Florida",
+                    "description": "Tampa, Ocala",
+                    "position": [805, 525],
+                    "label_position": "left",
+                    "url": "https://wfl.pulte.yurstore.com"
+                },
+                {
+                    "label": "Southeast Florida",
+                    "description": "SE Coast",
+                    "position": [850, 545],
+                    "label_position": "bottom_right",
+                    "url": "https://sefl.pulte.yurstore.com"
+                },
+                {
+                    "label": "Southwest Florida",
+                    "description": "Sarasota, Ft Myers, Naples",
+                    "position": [820, 555],
+                    "label_position": "bottom_left",
+                    "url": "https://swfl.pulte.yurstore.com"
+                }
+            ]
+        }
+    ],};
+
+    storeData.regions.forEach(function(region) {
+        region.links.forEach(function(link) {
+            // Create a marker for each store
+            var marker = L.marker([link.position[1], link.position[0]]).addTo(map);
+
+            // Add popup to the marker
+            marker.bindPopup('<b>' + link.label + '</b><br><a href="' + link.url + '" target="_blank">Visit Store</a>');
+
+            // Optional: Highlight the state the store belongs to
+            // You can modify the getFillColor function to check if a store exists in the state
+        });
+    });
+
+    function getFillColor(stateName) {
+        var hasStore = storeData.regions.some(function(region) {
+            return region.states.includes(stateName) && region.links.length > 0;
+        });
+        return hasStore ? 'darkblue' : 'rgb(194, 194, 194)';
+    }
+
+</script>
+
+
+
+</body>
+</html>
